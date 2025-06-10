@@ -17,23 +17,23 @@ export class AppController implements OnModuleInit {
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: 'book',
+        clientId: 'gateway',
         brokers: ['localhost:9092'],
       },
       consumer: {
-        groupId: 'book-consumer',
+        groupId: 'gateway-consumer',
         allowAutoTopicCreation: true,
       },
     },
   })
   private client: ClientKafka;
   async onModuleInit() {
-    const requestPatterns = ['find-book'];
+    const requestPatterns = ['find-book', 'create-book'];
 
     requestPatterns.forEach(async (pattern) => {
       this.client.subscribeToResponseOf(pattern);
-      await this.client.connect();
     });
+    await this.client.connect();
   }
 
   @Post('book')
