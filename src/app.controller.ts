@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Controller, Get, OnModuleInit, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  OnModuleInit,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
@@ -27,6 +34,11 @@ export class AppController implements OnModuleInit {
       this.client.subscribeToResponseOf(pattern);
       await this.client.connect();
     });
+  }
+
+  @Post('book')
+  createBook(@Body() createBookDto: any): Observable<any> {
+    return this.client.send('create-book', createBookDto);
   }
   @Get('book/:id')
   findBook(@Param('id') id: string): Observable<any> {
