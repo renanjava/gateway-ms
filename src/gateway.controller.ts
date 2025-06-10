@@ -12,7 +12,7 @@ import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
 @Controller('gateway')
-export class AppController implements OnModuleInit {
+export class GatewayController implements OnModuleInit {
   @Client({
     transport: Transport.KAFKA,
     options: {
