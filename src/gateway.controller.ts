@@ -28,7 +28,7 @@ export class GatewayController implements OnModuleInit {
   })
   private client: ClientKafka;
   async onModuleInit() {
-    const requestPatterns = ['find-book', 'create-book'];
+    const requestPatterns = ['create-book', 'find-all-book', 'find-book'];
 
     requestPatterns.forEach(async (pattern) => {
       this.client.subscribeToResponseOf(pattern);
@@ -40,8 +40,14 @@ export class GatewayController implements OnModuleInit {
   createBook(@Body() createBookDto: any): Observable<any> {
     return this.client.send('create-book', createBookDto);
   }
+
+  @Get('book')
+  findAllBooks(): Observable<any[]> {
+    return this.client.send('find-all-book', {});
+  }
+
   @Get('book/:id')
-  findBook(@Param('id') id: string): Observable<any> {
-    return this.client.send('find-book', { id });
+  findBook(@Param('id') id: number): Observable<any> {
+    return this.client.send('find-book', id);
   }
 }
