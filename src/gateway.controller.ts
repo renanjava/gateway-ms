@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import {
   Body,
   Controller,
+  Delete,
   Get,
   OnModuleInit,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
@@ -22,13 +25,19 @@ export class GatewayController implements OnModuleInit {
       },
       consumer: {
         groupId: 'gateway-consumer',
-        allowAutoTopicCreation: true,
       },
     },
   })
   private client: ClientKafka;
   async onModuleInit() {
-    const requestPatterns = ['create-book', 'find-all-book', 'find-book'];
+    const requestPatterns = [
+      'create-book',
+      'find-all-book',
+      'find-book',
+      'update-book',
+      'delete-book',
+      'update-book-status',
+    ];
 
     requestPatterns.forEach(async (pattern) => {
       this.client.subscribeToResponseOf(pattern);
@@ -37,8 +46,8 @@ export class GatewayController implements OnModuleInit {
   }
 
   @Post('book')
-  createBook(@Body() createBookDto: any): Observable<any> {
-    return this.client.send('create-book', createBookDto);
+  createBook(@Body() body: any): Observable<any> {
+    return this.client.send('create-book', { body });
   }
 
   @Get('book')
@@ -47,7 +56,22 @@ export class GatewayController implements OnModuleInit {
   }
 
   @Get('book/:id')
-  findBook(@Param('id') id: number): Observable<any> {
-    return this.client.send('find-book', id);
+  findBook(@Param('id') id: string): Observable<any[]> {
+    return this.client.send('find-book', { id });
+  }
+
+  @Patch('book/:id')
+  updateBook(@Param('id') id: string, @Body() body: any): Observable<any> {
+    return this.client.send('update-book', { id, body });
+  }
+
+  @Patch('book/:id/status')
+  updateBookStatus(@Param('id') id: string): Observable<any> {
+    return this.client.send('update-book-status', { id });
+  }
+
+  @Delete('book/:id')
+  deleteBook(@Param('id') id: string): Observable<any> {
+    return this.client.send('delete-book', { id });
   }
 }
