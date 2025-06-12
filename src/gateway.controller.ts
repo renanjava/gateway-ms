@@ -37,6 +37,12 @@ export class GatewayController implements OnModuleInit {
       'update-book',
       'delete-book',
       'update-book-status',
+      'create-reservation',
+      'delete-reservation',
+      'find-user-reservation',
+      'create-user',
+      'find-all-user',
+      'delete-user',
     ];
 
     requestPatterns.forEach(async (pattern) => {
@@ -73,5 +79,35 @@ export class GatewayController implements OnModuleInit {
   @Delete('book/:id')
   deleteBook(@Param('id') id: string): Observable<any> {
     return this.client.send('delete-book', { id });
+  }
+
+  @Post('reservation')
+  async createReservation(@Body() body: any) {
+    return this.client.send('create-reservation', { body });
+  }
+
+  @Get('reservation/user/:userId')
+  findOneReservation(@Param('userId') id: string) {
+    return this.client.send('find-user-reservation', { id });
+  }
+
+  @Delete('reservation/:id')
+  deleteReservation(@Param('id') id: string) {
+    return this.client.send('delete-reservation', { id });
+  }
+
+  @Post('user')
+  createUser(@Body() body: any) {
+    return this.client.send('create-user', { body });
+  }
+
+  @Get('user')
+  findAll() {
+    return this.client.send('find-all-user', {});
+  }
+
+  @Delete('user/:id')
+  remove(@Param('id') id: string) {
+    return this.client.send('delete-user', { id });
   }
 }
