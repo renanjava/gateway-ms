@@ -21,7 +21,7 @@ export class GatewayController implements OnModuleInit {
     options: {
       client: {
         clientId: 'gateway',
-        brokers: ['localhost:9092'],
+        brokers: ['localhost:29092'],
       },
       consumer: {
         groupId: 'gateway-consumer',
